@@ -18,13 +18,13 @@ public class BaseWindow {
     public BaseWindow() {
         encodeBtn.addActionListener(event -> {
             Encoder encoder = new Encoder();
-            String encoded = encoder.encodePassword(textDisplay.getText(), Const.SECRET_KEY);
+            String encoded = encoder.encodePassword2(textDisplay.getText(), Const.SECRET_KEY);
             textDisplay.setText(encoded);
         });
 
         decodeBtn.addActionListener(event -> {
             Decoder decoder = new Decoder();
-            String encoded = decoder.decodePassword(textDisplay.getText(), Const.SECRET_KEY);
+            String encoded = decoder.decodePassword2(textDisplay.getText(), Const.SECRET_KEY);
             textDisplay.setText(encoded);
         });
     }
