@@ -20,7 +20,7 @@ public class ConfigLoader {
         String path = getAbsolutePath(BASE_DIR, FILE_NAME);
         String dir = getPathToDir(path, FILE_NAME);
         if (checkProps()) Files.createDirectories(Paths.get(dir));
-        Writer.writeOutputToFile(src, path);
+        Writer.writeOutputToFileSoftMode(src, path);
         MemoryCache.setProperty("property_file_path", path);
         MemoryCache.setProperty("resource_dir_path", dir);
     }
@@ -37,11 +37,23 @@ public class ConfigLoader {
         String pathToDir = getPathToDir(pathToFile, FILE_NAME);
         boolean existsDir = Files.isDirectory(Paths.get(pathToDir));
         boolean existsFile = Files.isRegularFile(Paths.get(pathToFile));
-        if (MemoryCache.hasProperty("property_file_path") && MemoryCache.hasProperty("resource_dir_path")) {
+        if (!(MemoryCache.hasProperty("property_file_path") && MemoryCache.hasProperty("resource_dir_path"))) {
             MemoryCache.setProperty("property_file_path", pathToFile);
             MemoryCache.setProperty("resource_dir_path", pathToDir);
         }
         return !existsDir || !existsFile;
+    }
+
+    public static boolean checkPass() {
+        String file = Reader.readInputFromFile(MemoryCache.getProperty("property_file_path"));
+        String[] lines = file.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            String[] words = lines[i].split("=");
+            for (int j = 0; j < words.length; j++) {
+                if (words[j].equals("admin_password")) return true;
+            }
+        }
+        return false;
     }
 
     private static String getAbsolutePath(String path, String fileName) {

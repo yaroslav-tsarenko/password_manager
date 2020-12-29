@@ -42,6 +42,10 @@ public class CredentialsDto {
         return dto;
     }
 
+    public boolean hasNull() {
+        return this.username == null || this.serviceName == null || this.password == null;
+    }
+
     public String getFormattedDate() {
         return formattedDate;
     }

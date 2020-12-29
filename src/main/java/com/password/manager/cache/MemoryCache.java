@@ -8,8 +8,10 @@ public class MemoryCache {
 
     public static void readProps(String src) {
         String[] lines = src.split("\n");
-        String[] kv = lines[0].split("=");
-        cache.put(kv[0], kv[1]);
+        for (int i = 0; i < lines.length; i++) {
+            String[] kv = lines[i].split("=");
+            cache.put(kv[0], kv[1]);
+        }
     }
 
     public static void setProperty(String key, String value) {

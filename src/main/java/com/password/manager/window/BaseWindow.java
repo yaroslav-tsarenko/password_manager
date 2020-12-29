@@ -1,9 +1,11 @@
 package com.password.manager.window;
 
 import com.password.manager.cache.MemoryCache;
+import com.password.manager.config.ConfigLoader;
 import com.password.manager.dto.CredentialsDto;
 import com.password.manager.service.CredentialsServiceImpl;
 import com.password.manager.service.exception.ArgumentRequiredException;
+import com.password.manager.ts_encrypt.TSEncrypt;
 import com.password.manager.util.ResponseFactory;
 import com.password.manager.util.StringFactory;
 
@@ -60,7 +62,7 @@ public class BaseWindow {
 
         encryptCredentials.addActionListener(event -> {
             String userChoice = JOptionPane.showInputDialog("enter password");
-            if (userChoice.equals("12345")) {
+            if (TSEncrypt.doDecryption(MemoryCache.getProperty("admin_password")).equals(userChoice)) {
                 String serviceName = JOptionPane.showInputDialog("enter service name");
                 statusDisplay.setText(service.getCredentialsByServiceName(serviceName));
             } else {
@@ -72,6 +74,16 @@ public class BaseWindow {
             statusDisplay.setText("");
         });
 
+        if (!ConfigLoader.checkPass()) {
+            String pass = JOptionPane.showInputDialog("create password");
+            try {
+                String passFinal = TSEncrypt.doEncryption(pass);
+                ConfigLoader.saveConfig("admin_password=" + passFinal);
+                MemoryCache.setProperty("admin_password", passFinal);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         statusDisplay.setText(ResponseFactory.createResponse("Password Manager loaded"));
     }
 
