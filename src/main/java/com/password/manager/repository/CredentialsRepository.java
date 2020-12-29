@@ -1,7 +1,6 @@
 package com.password.manager.repository;
 
 import com.password.manager.cache.MemoryCache;
-import com.password.manager.config.exception.ConfigException;
 import com.password.manager.file.Reader;
 import com.password.manager.file.Writer;
 

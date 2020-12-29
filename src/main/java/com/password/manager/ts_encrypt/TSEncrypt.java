@@ -6,7 +6,6 @@ import com.password.manager.ts_encrypt.exception.UnsupportedSymbolException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-
 import static com.password.manager.ts_encrypt.Const.GLOBAL_SYMBOLS;
 import static com.password.manager.ts_encrypt.Const.SYMBOLS;
 

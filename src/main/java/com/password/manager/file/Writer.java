@@ -1,7 +1,5 @@
 package com.password.manager.file;
 
-import com.password.manager.util.StringFactory;
-
 import java.io.FileWriter;
 import java.io.IOException;
 
