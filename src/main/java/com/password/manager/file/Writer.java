@@ -2,6 +2,8 @@ package com.password.manager.file;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Writer {
 
@@ -17,7 +19,8 @@ public class Writer {
     }
 
     public static void writeOutputToFileSoftMode(String output, String path) {
-        String data = Reader.readInputFromFile(path);
+        String data = "";
+        if (Files.isRegularFile(Paths.get(path))) data = Reader.readInputFromFile(path);
         try {
             FileWriter writer = new FileWriter(path);
             writer.write(data.concat(output));
