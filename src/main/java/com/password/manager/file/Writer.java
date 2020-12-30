@@ -7,28 +7,20 @@ import java.nio.file.Paths;
 
 public class Writer {
 
-    public static void writeOutputToFile(String output, String path) {
-        try {
+    public static void writeOutputToFile(String output, String path) throws IOException {
             FileWriter writer = new FileWriter(path);
             writer.write(output);
             writer.flush();
             writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
-    public static void writeOutputToFileSoftMode(String output, String path) {
+    public static void writeOutputToFileSoftMode(String output, String path) throws IOException {
         String data = "";
         if (Files.isRegularFile(Paths.get(path))) data = Reader.readInputFromFile(path);
-        try {
             FileWriter writer = new FileWriter(path);
             writer.write(data.concat(output));
             writer.flush();
             writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static String outputEditor(String src, int lineLength) {

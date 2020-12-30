@@ -3,6 +3,7 @@ package com.password.manager.repository;
 import com.password.manager.cache.MemoryCache;
 import com.password.manager.file.Reader;
 import com.password.manager.file.Writer;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,11 +16,17 @@ import static com.password.manager.util.Constants.REPO_FILE_NAME;
 
 public class CredentialsRepository {
 
-    public static void save(String record) throws IOException {
+    private static final Logger log = Logger.getLogger(CredentialsRepository.class);
+
+    public static void save(String record) {
         String path = getAbsolutePath(BASE_DIR, REPO_FILE_NAME);
         String dir = getPathToDir(path, REPO_FILE_NAME);
-        if (checkRepo()) Files.createDirectories(Paths.get(dir));
-        Writer.writeOutputToFileSoftMode(record, path);
+        try {
+            if (checkRepo()) Files.createDirectories(Paths.get(dir));
+            Writer.writeOutputToFileSoftMode(record, path);
+        } catch (IOException e) {
+            log.error(e);
+        }
         if (MemoryCache.hasProperty("storage_file_path") && MemoryCache.hasProperty("storage_dir_path")) {
             MemoryCache.setProperty("storage_file_path", path);
             MemoryCache.setProperty("storage_dir_path", dir);
@@ -28,7 +35,12 @@ public class CredentialsRepository {
 
     public static String getOneByServiceName(String serviceName) {
         if (prepareRepo()) {
-            String input = Reader.readInputFromFile(MemoryCache.getProperty("storage_file_path"));
+            String input = null;
+            try {
+                input = Reader.readInputFromFile(MemoryCache.getProperty("storage_file_path"));
+            } catch (IOException e) {
+                log.error(e);
+            }
             String[] lines = input.split("\n");
             for (int i = 0; i < lines.length; i++) {
                 if (existsByName(serviceName, lines[i])) return lines[i];

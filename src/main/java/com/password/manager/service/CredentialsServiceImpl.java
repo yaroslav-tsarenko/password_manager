@@ -7,7 +7,6 @@ import com.password.manager.ts_encrypt.TSEncrypt;
 import com.password.manager.util.ResponseFactory;
 import com.password.manager.util.StringFactory;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,7 @@ import java.util.Map;
 public class CredentialsServiceImpl implements CredentialService {
 
     @Override
-    public String saveCredentials(CredentialsDto credentials) throws ArgumentRequiredException, IOException {
+    public String saveCredentials(CredentialsDto credentials) throws ArgumentRequiredException {
         Map<String, Object> fields = credentials.getFieldMap();
         Map<String, Object> validFields = new HashMap<>();
         fields.forEach((k, v) -> {

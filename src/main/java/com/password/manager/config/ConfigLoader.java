@@ -4,6 +4,7 @@ import com.password.manager.cache.MemoryCache;
 import com.password.manager.config.exception.ConfigException;
 import com.password.manager.file.Reader;
 import com.password.manager.file.Writer;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,11 +17,19 @@ import static com.password.manager.util.Constants.FILE_NAME;
 
 public class ConfigLoader {
 
-    public static void saveConfig(String src) throws IOException {
+    private static final Logger log = Logger.getLogger(ConfigLoader.class);
+
+    public static void saveConfig(String src) {
         String path = getAbsolutePath(BASE_DIR, FILE_NAME);
         String dir = getPathToDir(path, FILE_NAME);
-        if (checkProps()) Files.createDirectories(Paths.get(dir));
-        Writer.writeOutputToFileSoftMode(src, path);
+        if (checkProps()) {
+            try {
+                Files.createDirectories(Paths.get(dir));
+                Writer.writeOutputToFileSoftMode(src, path);
+            } catch (IOException e) {
+                log.error(e);
+            }
+        }
         MemoryCache.setProperty("property_file_path", path);
         MemoryCache.setProperty("resource_dir_path", dir);
     }
@@ -29,7 +38,13 @@ public class ConfigLoader {
         String pathToFile = getAbsolutePath(BASE_DIR, FILE_NAME);
         if (checkProps())
             throw new ConfigException("can't find app properties");
-        return Reader.readInputFromFile(pathToFile);
+        String input = "";
+        try {
+            input = Reader.readInputFromFile(pathToFile);
+        } catch (IOException e) {
+            log.error(e);
+        }
+        return input;
     }
 
     public static boolean checkProps() {
@@ -45,7 +60,12 @@ public class ConfigLoader {
     }
 
     public static boolean checkPass() {
-        String file = Reader.readInputFromFile(MemoryCache.getProperty("property_file_path"));
+        String file = "";
+        try {
+            file = Reader.readInputFromFile(MemoryCache.getProperty("property_file_path"));
+        } catch (IOException e) {
+            log.error(e);
+        }
         String[] lines = file.split("\n");
         for (int i = 0; i < lines.length; i++) {
             String[] words = lines[i].split("=");

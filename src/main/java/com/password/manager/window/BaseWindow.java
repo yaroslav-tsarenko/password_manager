@@ -8,6 +8,7 @@ import com.password.manager.service.exception.ArgumentRequiredException;
 import com.password.manager.ts_encrypt.TSEncrypt;
 import com.password.manager.util.ResponseFactory;
 import com.password.manager.util.StringFactory;
+import org.apache.log4j.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -26,6 +27,8 @@ import static com.password.manager.util.Constants.REPO_FILE_NAME;
 
 public class BaseWindow {
 
+    private static final Logger log = Logger.getLogger(BaseWindow.class);
+
     public JPanel passwordManager;
     public JTextField serviceNameField;
     public JTextField usernameField;
@@ -42,7 +45,7 @@ public class BaseWindow {
             try {
                 Files.createFile(Path.of(path));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e);
             }
             MemoryCache.setProperty("storage_file_path", path);
         }
@@ -60,8 +63,8 @@ public class BaseWindow {
                         serviceNameField.setText("");
                         usernameField.setText("");
                         passwordField.setText("");
-                    } catch (IOException | ArgumentRequiredException e) {
-                        e.printStackTrace();
+                    } catch (ArgumentRequiredException e) {
+                        log.error(e);
                     }
                 } else {
                     serviceNameField.setText("");
@@ -86,7 +89,7 @@ public class BaseWindow {
                             ResponseFactory.createResponse("storage not found, save at least one record")));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e);
             }
         });
 
@@ -106,13 +109,10 @@ public class BaseWindow {
 
         if (!ConfigLoader.checkPass()) {
             String pass = JOptionPane.showInputDialog("create password");
-            try {
-                String passFinal = TSEncrypt.doEncryption(pass);
-                ConfigLoader.saveConfig("admin_password=" + passFinal);
-                MemoryCache.setProperty("admin_password", passFinal);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String passFinal = TSEncrypt.doEncryption(pass);
+            ConfigLoader.saveConfig("admin_password=" + passFinal);
+            MemoryCache.setProperty("admin_password", passFinal);
+
         }
         statusDisplay.setText(ResponseFactory.createResponse("Password Manager loaded"));
     }
