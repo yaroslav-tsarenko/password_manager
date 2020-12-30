@@ -33,6 +33,7 @@ public class CredentialsServiceImpl implements CredentialService {
         String one = CredentialsRepository.getOneByServiceName(serviceName);
         CredentialsDto dto = getDtoFromOneLine(one);
         if (!dto.hasNull()) dto.setPassword(TSEncrypt.doDecryption(dto.getPassword()));
+        if (dto.hasNull()) return ResponseFactory.createResponse("service not found");
         return ResponseFactory.createCredentialResponse(dto);
     }
 

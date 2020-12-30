@@ -6,7 +6,7 @@ import com.password.manager.repository.CredentialsRepository;
 import com.password.manager.util.Generator;
 import com.password.manager.window.BaseWindow;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 import java.io.IOException;
 
 import static com.password.manager.ts_encrypt.Const.GLOBAL_SYMBOLS;

@@ -9,11 +9,20 @@ import com.password.manager.ts_encrypt.TSEncrypt;
 import com.password.manager.util.ResponseFactory;
 import com.password.manager.util.StringFactory;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
+
+import static com.password.manager.util.Constants.REPO_FILE_NAME;
 
 public class BaseWindow {
 
@@ -28,33 +37,54 @@ public class BaseWindow {
     public JTextArea statusDisplay;
 
     public BaseWindow() {
+        if (!MemoryCache.hasProperty("storage_file_path")) {
+            String path = MemoryCache.getProperty("resource_dir_path") + REPO_FILE_NAME;
+            try {
+                Files.createFile(Path.of(path));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            MemoryCache.setProperty("storage_file_path", path);
+        }
         CredentialsServiceImpl service = new CredentialsServiceImpl();
         saveCredentials.addActionListener(event -> {
-            int userChoice = JOptionPane.showConfirmDialog(null, "Please confirm to save");
-            if (userChoice == 0) {
-                try {
-                    String response = service.saveCredentials(CredentialsDto.build(Map.of("service_name", serviceNameField.getText(),
-                            "user_name", usernameField.getText(), "password", passwordField.getText())));
-                    statusDisplay.setText(refreshStatus(statusDisplay.getText(), response));
-                } catch (IOException | ArgumentRequiredException e) {
-                    e.printStackTrace();
-                }
+            if (serviceNameField.getText().equals("") && usernameField.getText().equals("") && passwordField.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Enter credentials please");
             } else {
-                serviceNameField.setText("");
-                usernameField.setText("");
-                passwordField.setText("");
+                int userChoice = JOptionPane.showConfirmDialog(null, "Please confirm to save");
+                if (userChoice == 0) {
+                    try {
+                        String response = service.saveCredentials(CredentialsDto.build(Map.of("service_name", serviceNameField.getText(),
+                                "user_name", usernameField.getText(), "password", passwordField.getText())));
+                        statusDisplay.setText(refreshStatus(statusDisplay.getText(), response));
+                        serviceNameField.setText("");
+                        usernameField.setText("");
+                        passwordField.setText("");
+                    } catch (IOException | ArgumentRequiredException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    serviceNameField.setText("");
+                    usernameField.setText("");
+                    passwordField.setText("");
+                }
             }
         });
 
         openStorage.addActionListener(event -> {
             Desktop desktop = Desktop.getDesktop();
             try {
-                String filePath = MemoryCache.getProperty("storage_file_path");
-                File file = new File(filePath);
-                desktop.edit(file);
-                statusDisplay.setText(refreshStatus(
-                        statusDisplay.getText(), ResponseFactory.createResponse(StringFactory
-                                .buildString("file:", file.getName(), "opened"))));
+                if (Files.isRegularFile(Path.of(MemoryCache.getProperty("storage_file_path")))) {
+                    String filePath = MemoryCache.getProperty("storage_file_path");
+                    File file = new File(filePath);
+                    desktop.edit(file);
+                    statusDisplay.setText(refreshStatus(
+                            statusDisplay.getText(), ResponseFactory.createResponse(StringFactory
+                                    .buildString("file:", file.getName(), "opened"))));
+                } else {
+                    statusDisplay.setText(refreshStatus(statusDisplay.getText(),
+                            ResponseFactory.createResponse("storage not found, save at least one record")));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -90,6 +120,5 @@ public class BaseWindow {
     public String refreshStatus(String current, String newStatus) {
         if (current.length() >= 400) return newStatus;
         return current + "\n" + newStatus;
-
     }
 }
