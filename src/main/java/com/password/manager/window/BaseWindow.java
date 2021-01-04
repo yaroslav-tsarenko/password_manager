@@ -33,10 +33,10 @@ public class BaseWindow {
     public JTextField serviceNameField;
     public JTextField usernameField;
     public JPasswordField passwordField;
-    public JButton openStorage;
-    public JButton saveCredentials;
-    public JButton encryptCredentials;
-    public JButton clearStatusDisplay;
+    public JButton openStorageButton;
+    public JButton saveCredentialsButton;
+    public JButton encryptCredentialsButton;
+    public JButton clearStatusDisplayButton;
     public JTextArea statusDisplay;
 
     public BaseWindow() {
@@ -50,7 +50,8 @@ public class BaseWindow {
             MemoryCache.setProperty("storage_file_path", path);
         }
         CredentialsServiceImpl service = new CredentialsServiceImpl();
-        saveCredentials.addActionListener(event -> {
+
+        saveCredentialsButton.addActionListener(event -> {
             if (serviceNameField.getText().equals("") && usernameField.getText().equals("") && passwordField.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Enter credentials please");
             } else {
@@ -74,7 +75,7 @@ public class BaseWindow {
             }
         });
 
-        openStorage.addActionListener(event -> {
+        openStorageButton.addActionListener(event -> {
             Desktop desktop = Desktop.getDesktop();
             try {
                 if (Files.isRegularFile(Path.of(MemoryCache.getProperty("storage_file_path")))) {
@@ -93,7 +94,7 @@ public class BaseWindow {
             }
         });
 
-        encryptCredentials.addActionListener(event -> {
+        encryptCredentialsButton.addActionListener(event -> {
             String userChoice = JOptionPane.showInputDialog("enter password");
             if (TSEncrypt.doDecryption(MemoryCache.getProperty("admin_password")).equals(userChoice)) {
                 String serviceName = JOptionPane.showInputDialog("enter service name");
@@ -103,7 +104,7 @@ public class BaseWindow {
             }
         });
 
-        clearStatusDisplay.addActionListener(event -> {
+        clearStatusDisplayButton.addActionListener(event -> {
             statusDisplay.setText("");
         });
 

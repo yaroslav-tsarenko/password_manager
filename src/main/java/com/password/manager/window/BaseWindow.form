@@ -85,7 +85,7 @@
           <text value="password"/>
         </properties>
       </component>
-      <component id="9d954" class="javax.swing.JButton" binding="openStorage">
+      <component id="9d954" class="javax.swing.JButton" binding="openStorageButton">
         <constraints>
           <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -93,7 +93,7 @@
           <text value="open storage"/>
         </properties>
       </component>
-      <component id="142bb" class="javax.swing.JButton" binding="saveCredentials">
+      <component id="142bb" class="javax.swing.JButton" binding="saveCredentialsButton">
         <constraints>
           <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -151,7 +151,7 @@
           <text value="status bar"/>
         </properties>
       </component>
-      <component id="b397b" class="javax.swing.JButton" binding="encryptCredentials">
+      <component id="b397b" class="javax.swing.JButton" binding="encryptCredentialsButton">
         <constraints>
           <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -159,7 +159,7 @@
           <text value="get from storage"/>
         </properties>
       </component>
-      <component id="2db73" class="javax.swing.JButton" binding="clearStatusDisplay">
+      <component id="2db73" class="javax.swing.JButton" binding="clearStatusDisplayButton">
         <constraints>
           <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
