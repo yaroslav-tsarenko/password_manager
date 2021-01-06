@@ -19,17 +19,13 @@ public class ConfigLoader {
 
     private static final Logger log = Logger.getLogger(ConfigLoader.class);
 
-    public static void saveConfig(String src) {
+    public static void saveConfig(String src) throws IOException {
         String path = getAbsolutePath(BASE_DIR, FILE_NAME);
         String dir = getPathToDir(path, FILE_NAME);
         if (checkProps()) {
-            try {
-                Files.createDirectories(Paths.get(dir));
-                Writer.writeOutputToFileSoftMode(src, path);
-            } catch (IOException e) {
-                log.error(e);
-            }
+            Files.createDirectories(Paths.get(dir));
         }
+        Writer.writeOutputToFileSoftMode(src, path);
         MemoryCache.setProperty("property_file_path", path);
         MemoryCache.setProperty("resource_dir_path", dir);
     }

@@ -111,7 +111,11 @@ public class BaseWindow {
         if (!ConfigLoader.checkPass()) {
             String pass = JOptionPane.showInputDialog("create password");
             String passFinal = TSEncrypt.doEncryption(pass);
-            ConfigLoader.saveConfig("admin_password=" + passFinal);
+            try {
+                ConfigLoader.saveConfig("admin_password=" + passFinal);
+            } catch (IOException e) {
+                log.error(e);
+            }
             MemoryCache.setProperty("admin_password", passFinal);
 
         }

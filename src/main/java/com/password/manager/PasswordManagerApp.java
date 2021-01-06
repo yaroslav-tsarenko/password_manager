@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 
 import javax.swing.JFrame;
 
+import java.io.IOException;
+
 import static com.password.manager.ts_encrypt.Const.GLOBAL_SYMBOLS;
 
 public class PasswordManagerApp {
@@ -20,7 +22,11 @@ public class PasswordManagerApp {
         CredentialsRepository.checkRepo();
         if (ConfigLoader.checkProps()) {
             String propsItem = "secret_key=" + gen.getSecretKey(GLOBAL_SYMBOLS.length - 1);
-            ConfigLoader.saveConfig(propsItem);
+            try {
+                ConfigLoader.saveConfig(propsItem);
+            } catch (IOException e) {
+               log.error(e);
+            }
         }
         MemoryCache.readProps(ConfigLoader.loadConfig());
         JFrame frame = new JFrame("Password Manager");
