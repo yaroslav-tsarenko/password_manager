@@ -7,6 +7,9 @@ import com.password.manager.ts_encrypt.TSEncrypt;
 import com.password.manager.util.ResponseFactory;
 import com.password.manager.util.StringFactory;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +34,12 @@ public class CredentialsServiceImpl implements CredentialService {
     public String getCredentialsByServiceName(String serviceName) {
         String one = CredentialsRepository.getOneByServiceName(serviceName);
         CredentialsDto dto = getDtoFromOneLine(one);
-        if (!dto.hasNull()) dto.setPassword(TSEncrypt.doDecryption(dto.getPassword()));
+        StringSelection stringSelection = null;
+        if (!dto.hasNull()) stringSelection = new StringSelection(TSEncrypt.doDecryption(dto.getPassword()));
         if (dto.hasNull()) return ResponseFactory.createResponse("service not found");
+        dto.setPassword("password saved to clipboard");
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
         return ResponseFactory.createCredentialResponse(dto);
     }
 
