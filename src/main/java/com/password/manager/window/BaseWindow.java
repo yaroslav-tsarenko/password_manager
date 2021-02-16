@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+import static com.password.manager.PasswordManagerApp.runLoginWindow;
 import static com.password.manager.util.Constants.REPO_FILE_NAME;
 
 public class BaseWindow {
@@ -95,12 +96,10 @@ public class BaseWindow {
         });
 
         encryptCredentialsButton.addActionListener(event -> {
-            String userChoice = JOptionPane.showInputDialog("enter password");
-            if (TSEncrypt.doDecryption(MemoryCache.getProperty("admin_password")).equals(userChoice)) {
-                String serviceName = JOptionPane.showInputDialog("enter service name");
-                statusDisplay.setText(service.getCredentialsByServiceName(serviceName));
+            if (MemoryCache.hasProperty("user_status") && (MemoryCache.getProperty("user_status").equals("authorized"))) {
+                authorize();
             } else {
-                statusDisplay.setText(refreshStatus(statusDisplay.getText(), ResponseFactory.createResponse("access denied!")));
+                runLoginWindow();
             }
         });
 
@@ -125,5 +124,11 @@ public class BaseWindow {
     public String refreshStatus(String current, String newStatus) {
         if (current.length() >= 400) return newStatus;
         return current + "\n" + newStatus;
+    }
+
+    public void authorize(){
+        CredentialsServiceImpl service = new CredentialsServiceImpl();
+        String serviceName = JOptionPane.showInputDialog("enter service name");
+        statusDisplay.setText(service.getCredentialsByServiceName(serviceName));
     }
 }
